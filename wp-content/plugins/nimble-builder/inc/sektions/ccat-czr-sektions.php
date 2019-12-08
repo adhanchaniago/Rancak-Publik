@@ -525,6 +525,9 @@ function nimble_add_i18n_localized_control_params( $params ) {
 
             'Settings for the' => __('Settings for the', 'nimble-builder'),//section / column / module
 
+            'The section cannot be moved higher.' => __('The section cannot be moved higher.', 'nimble-builder'),
+            'The section cannot be moved lower.' => __('The section cannot be moved lower.', 'nimble-builder'),
+
             // UI global and local options
             'Current page options' => __( 'Current page options', 'nimble-builder'),
             'Page template' => __( 'Page template', 'nimble-builder'),

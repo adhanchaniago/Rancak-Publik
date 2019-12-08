@@ -228,6 +228,10 @@
 var CZRSeksPrototype = CZRSeksPrototype || {};
 (function ( api, $ ) {
       $.extend( CZRSeksPrototype, {
+            cachedElements : {
+                $body : $('body'),
+                $window : $(window)
+            },
 
             initialize: function() {
                   var self = this;
@@ -501,10 +505,11 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
 
 
                   // store active locations
-                  // introduced for the level tree, https://github.com/presscustomizr/nimble-builder/issues/359
-                  self.activeLocations = new api.Value([]);
+                  self.activeLocations = new api.Value([]);// <= introduced for the level tree, https://github.com/presscustomizr/nimble-builder/issues/359
+                  self.activeLocationsInfo = new api.Value([]);// <= introduced for better move up/down of sections https://github.com/presscustomizr/nimble-builder/issues/521
                   api.previewer.bind('sek-active-locations-in-preview', function( activelocs ){
                         self.activeLocations( ( _.isObject(activelocs) && _.isArray( activelocs.active_locations ) ) ? activelocs.active_locations : [] );
+                        self.activeLocationsInfo( ( _.isObject(activelocs) && _.isArray( activelocs.active_locs_info ) ) ? activelocs.active_locs_info : [] );
                   });
 
 
@@ -536,8 +541,8 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
                         }
 
                         // reset after a delay
-                        clearTimeout( $(window).data('_preview_target_timer_') );
-                        $(window).data('_preview_target_timer_', setTimeout(function() {
+                        clearTimeout( self.cachedElements.$window.data('_preview_target_timer_') );
+                        self.cachedElements.$window.data('_preview_target_timer_', setTimeout(function() {
                               // Reset the click target
                               self.lastClickedTargetInPreview( {} );
                               // Tell the preview to clean the target highlight effect
@@ -859,12 +864,12 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
 
                   var trackMouseMovements = function( evt ) {
                         self.mouseMovedRecently( { x : evt.clientX, y : evt.clientY } );
-                        clearTimeout( $(window).data('_scroll_move_timer_') );
-                        $(window).data('_scroll_move_timer_', setTimeout(function() {
+                        clearTimeout( self.cachedElements.$window.data('_scroll_move_timer_') );
+                        self.cachedElements.$window.data('_scroll_move_timer_', setTimeout(function() {
                               self.mouseMovedRecently.set( {} );
                         }, 4000 ) );
                   };
-                  $(window).on( 'mousemove scroll,', _.throttle( trackMouseMovements , 50 ) );
+                  self.cachedElements.$window.on( 'mousemove scroll,', _.throttle( trackMouseMovements , 50 ) );
                   api.previewer.bind('ready', function() {
                         $(api.previewer.targetWindow().document ).on( 'mousemove scroll,', _.throttle( trackMouseMovements , 50 ) );
                   });
@@ -886,13 +891,13 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
                                   self.topBarContainer = $_el;
                                   //display
                                   _.delay( function() {
-                                      $('body').addClass('nimble-top-bar-visible');
+                                      self.cachedElements.$body.addClass('nimble-top-bar-visible');
                                   }, 200 );
                             });
                       },
                       _hide = function() {
                             var dfd = $.Deferred();
-                            $('body').removeClass('nimble-top-bar-visible');
+                            self.cachedElements.$body.removeClass('nimble-top-bar-visible');
                             if ( self.topBarContainer && self.topBarContainer.length ) {
                                   //remove Dom element after slide up
                                   _.delay( function() {
@@ -1274,7 +1279,7 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
                   // SETUP AND REACT TO LEVEL TREE EXPANSION
                   self.levelTreeExpanded = new api.Value(false);
                   self.levelTreeExpanded.bind( function(expanded) {
-                        $('body').toggleClass( 'sek-level-tree-expanded', expanded );
+                        self.cachedElements.$body.toggleClass( 'sek-level-tree-expanded', expanded );
                         if ( expanded ) {
                               // Set the level tree now
                               self.setLevelTreeValue();
@@ -1336,7 +1341,7 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
 
 
                   // SETUP CLICK EVENTS IN THE TREE
-                  $('body').on('click', '#nimble-level-tree [data-nimb-level]', function(evt) {
+                  self.cachedElements.$body.on('click', '#nimble-level-tree [data-nimb-level]', function(evt) {
                         evt.preventDefault();
                         evt.stopPropagation();
                         var $el = $(evt.target),
@@ -1359,7 +1364,7 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
                         }, 100 );
                   });
 
-                  $('body').on('click', '#nimble-level-tree .sek-remove-level', function(evt) {
+                  self.cachedElements.$body.on('click', '#nimble-level-tree .sek-remove-level', function(evt) {
                         evt.preventDefault();
                         evt.stopPropagation();
                         var $el = $(evt.target).closest('[data-nimb-level]');
@@ -1376,7 +1381,7 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
                   });
 
                   // Collapse tree ( also possible by clicking on the tree icon in the top Nimble bar )
-                  $('body').on('click', '.sek-close-level-tree' , function(evt) {
+                  self.cachedElements.$body.on('click', '.sek-close-level-tree' , function(evt) {
                         evt.preventDefault();
                         self.levelTreeExpanded(false);
                   });
@@ -1654,7 +1659,7 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
                                   self.saveUIContainer = $_el;
                                   //display
                                   _.delay( function() {
-                                      $('body').addClass('nimble-save-ui-visible');
+                                      self.cachedElements.$body.addClass('nimble-save-ui-visible');
                                   }, 200 );
                                   // set section id input value
                                   $('#sek-saved-section-id').val( sectionId );
@@ -1662,7 +1667,7 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
                       },
                       _hide = function() {
                             var dfd = $.Deferred();
-                            $('body').removeClass('nimble-save-ui-visible');
+                            self.cachedElements.$body.removeClass('nimble-save-ui-visible');
                             if ( $( '#nimble-top-save-ui' ).length > 0 ) {
                                   //remove Dom element after slide up
                                   _.delay( function() {
@@ -1837,13 +1842,13 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
                             $.when( self.renderAndSetupFeedbackTmpl({}) ).done( function( $_el ) {
                                   //display
                                   _.delay( function() {
-                                      $('body').addClass('nimble-feedback-ui-visible');
+                                      self.cachedElements.$body.addClass('nimble-feedback-ui-visible');
                                   }, 200 );
                             });
                       },
                       _hideAndRemove = function() {
                             var dfd = $.Deferred();
-                            $('body').removeClass('nimble-feedback-ui-visible');
+                            self.cachedElements.$body.removeClass('nimble-feedback-ui-visible');
                             if ( $( self.feedbackUIId ).length > 0 ) {
                                   //remove Dom element after slide up
                                   _.delay( function() {
@@ -1905,7 +1910,7 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
                   };
 
                   // Attach event with delegation
-                  $('body').on('click', '[data-sek-feedback-action]', function(evt) {
+                  self.cachedElements.$body.on('click', '[data-sek-feedback-action]', function(evt) {
                         evt.preventDefault();
 
                         // On each click action, reset the timer
@@ -2648,6 +2653,18 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
                                               original_action : 'sek-move-section-up',
                                               moved_level_id : params.apiParams.id
                                         });
+
+                                        // Introduced for https://github.com/presscustomizr/nimble-builder/issues/521
+                                        if ( params.apiParams.new_location ) {
+                                              api.previewer.trigger( 'sek-refresh-level', {
+                                                    level : 'location',
+                                                    id :  params.apiParams.new_location,
+
+                                                    // added for https://github.com/presscustomizr/nimble-builder/issues/471
+                                                    original_action : 'sek-move-section-down',
+                                                    moved_level_id : params.apiParams.id
+                                              });
+                                        }
                                   }
                             },
 
@@ -2674,6 +2691,18 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
                                               original_action : 'sek-move-section-down',
                                               moved_level_id : params.apiParams.id
                                         });
+
+                                        // Introduced for https://github.com/presscustomizr/nimble-builder/issues/521
+                                        if ( params.apiParams.new_location ) {
+                                              api.previewer.trigger( 'sek-refresh-level', {
+                                                    level : 'location',
+                                                    id :  params.apiParams.new_location,
+
+                                                    // added for https://github.com/presscustomizr/nimble-builder/issues/471
+                                                    original_action : 'sek-move-section-down',
+                                                    moved_level_id : params.apiParams.id
+                                              });
+                                        }
                                   }
                             },
 
@@ -5449,7 +5478,6 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
                               // Fired on click on up / down arrows in the section ui menu
                               // This handles the nested sections case
                               case 'sek-move-section-up-down' :
-                                    //api.infoLog('PARAMS in sek-move-section-up', params );
                                     parentCandidate = self.getLevelModel( params.is_nested ? params.in_column : params.location , newSetValue.collection );
                                     if ( _.isEmpty( parentCandidate ) || 'no_match' == parentCandidate ) {
                                           throw new Error( 'updateAPISetting => ' + params.action + ' => missing target location' );
@@ -5467,20 +5495,106 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
                                     }
 
                                     // Swap up <=> down
-                                    var direction = params.direction || 'up';
+                                    var direction = params.direction || 'up',
+                                        isLastSectionInLocation = originalCollection.length === _indexInOriginal + 1,
+                                        isFirstSectionInLocation = 0 === _indexInOriginal,
+                                        _locInfo = self.activeLocationsInfo(),
+                                        _currentLocInfo = ! _.isArray( _locInfo ) ? {} : _.findWhere( _locInfo, { id : params.location } ),
+                                        isCurrentLocationGlobal = false,
+                                        isCurrentLocationHeaderOrFooter = false;
 
-                                    // prevent absurd movements of a section
-                                    // this should not happen because up / down arrows are not displayed when section is positionned top / bottom
-                                    // but safer to add it
-                                    if ( 'up' !== direction && originalCollection.length === _indexInOriginal + 1 ) {
-                                          throw new Error( 'updateAPISetting => ' + params.action + ' => bottom reached' );
-                                    } else if ( 'up' === direction && 0 === _indexInOriginal ){
-                                          throw new Error( 'updateAPISetting => ' + params.action + ' => top reached' );
+                                    // Is current location global ?
+                                    isCurrentLocationGlobal = _.isObject( _currentLocInfo ) && _currentLocInfo.is_global;
+
+                                    // Is current location header footer ?
+                                    isCurrentLocationHeaderOrFooter = _.isObject( _currentLocInfo ) && _currentLocInfo.is_header_footer;
+
+                                    // When a section is last in location and there's another location below, let's move the section to this sibling location
+                                    // This is possible when :
+                                    // - when moved section is not nested
+                                    // - only in locations that are 'local', not header or footer
+
+                                    // Populate the eligible activeLocations in the page
+                                    var activeLocationsInPage = [];
+                                    // self.activeLocationsInfo() is set on ::initialized when send by the preview, and is structured the following way :
+                                    //  [
+                                    //  {
+                                    //   id: "loop_start"
+                                    //   is_global: false
+                                    //   is_header_footer: false
+                                    //  },
+                                    //  {..},
+                                    //  .
+                                    if ( _.isArray( _locInfo ) ) {
+                                          _.each( self.activeLocationsInfo(), function( _loc_ ) {
+                                                if ( ! _loc_.is_global && ! _loc_.is_header_footer ) {
+                                                      activeLocationsInPage.push( _loc_.id );
+                                                }
+                                          });
                                     }
 
-                                    reorderedCollection[ _indexInOriginal ] = originalCollection[ 'up' === direction ? _indexInOriginal - 1 : _indexInOriginal + 1 ];
-                                    reorderedCollection[ 'up' === direction ? _indexInOriginal - 1 : _indexInOriginal + 1 ] = originalCollection[ _indexInOriginal ];
-                                    parentCandidate.collection = reorderedCollection;
+                                    // Set the index of the current location
+                                    var indexOfCurrentLocation = _.findIndex( activeLocationsInPage, function( _loc_id ) {
+                                          return _loc_id === params.location;
+                                    });
+
+                                    var isCurrentLocationEligibleForSectionMoveOutside = ! params.is_nested && ! isCurrentLocationGlobal && ! isCurrentLocationHeaderOrFooter,
+                                        isFirstLocationInPage = 0 === indexOfCurrentLocation,
+                                        isLastLocationInPage = activeLocationsInPage.length === indexOfCurrentLocation + 1,
+                                        newLocationId, newLocationCandidate;
+
+                                    if ( isCurrentLocationEligibleForSectionMoveOutside && isLastSectionInLocation && 'up' !== direction && ! isLastLocationInPage ) {
+                                          newLocationId = activeLocationsInPage[ indexOfCurrentLocation + 1 ];
+                                          newLocationCandidate = self.getLevelModel( newLocationId , newSetValue.collection );
+
+                                          // Add the section in first position of the section below
+                                          newLocationCandidate.collection.unshift( originalCollection[ _indexInOriginal ] );
+                                          // Removes the section in last position of the original section
+                                          parentCandidate.collection.pop();
+                                          // the new_location param will be used in the 'complete' callback of 'sek-move-section-down' / 'sek-move-section-up'
+                                          params.new_location = newLocationId;
+
+                                    } else if ( isCurrentLocationEligibleForSectionMoveOutside && isFirstSectionInLocation && 'up' === direction && ! isFirstLocationInPage ) {
+                                          newLocationId = activeLocationsInPage[ indexOfCurrentLocation - 1 ];
+                                          newLocationCandidate = self.getLevelModel( newLocationId , newSetValue.collection );
+
+                                          // Add the section in first position of the section below
+                                          newLocationCandidate.collection.push( originalCollection[ _indexInOriginal ] );
+                                          // Removes the section in last position of the original section
+                                          parentCandidate.collection.shift();
+                                          // the new_location param will be used in the 'complete' callback of 'sek-move-section-down' / 'sek-move-section-up'
+                                          params.new_location = newLocationId;
+                                    } else {
+                                          // prevent absurd movements of a section
+                                          // this should not happen because up / down arrows are not displayed when section is positionned top / bottom
+                                          // but safer to add it
+                                          if ( 'up' !== direction && originalCollection.length === _indexInOriginal + 1 ) {
+                                                //throw new Error( 'updateAPISetting => ' + params.action + ' => bottom reached' );
+                                                api.previewer.trigger('sek-notify', {
+                                                      type : 'info',
+                                                      duration : 30000,
+                                                      message : [
+                                                            '<span style="font-size:0.95em">',
+                                                              '<strong>' + sektionsLocalizedData.i18n[ "The section cannot be moved lower." ] + '</strong>',
+                                                            '</span>'
+                                                      ].join('')
+                                                });
+                                          } else if ( 'up' === direction && 0 === _indexInOriginal ){
+                                                api.previewer.trigger('sek-notify', {
+                                                      type : 'info',
+                                                      duration : 30000,
+                                                      message : [
+                                                            '<span style="font-size:0.95em">',
+                                                              '<strong>' + sektionsLocalizedData.i18n[ "The section cannot be moved higher." ] + '</strong>',
+                                                            '</span>'
+                                                      ].join('')
+                                                });
+                                          } else {
+                                                reorderedCollection[ _indexInOriginal ] = originalCollection[ 'up' === direction ? _indexInOriginal - 1 : _indexInOriginal + 1 ];
+                                                reorderedCollection[ 'up' === direction ? _indexInOriginal - 1 : _indexInOriginal + 1 ] = originalCollection[ _indexInOriginal ];
+                                                parentCandidate.collection = reorderedCollection;
+                                          }
+                                    }
                               break;
 
 
@@ -5627,7 +5741,7 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
                                           _candidate_.options = _new_options_values;
 
                                           // Live update the input value ( when rendered )
-                                          $('body').find('[data-sek-width-range-column-id="'+ _candidate_.id +'"]').val( newWidthValue ).trigger('input', { is_resize_column_trigger : true } );
+                                          self.cachedElements.$body.find('[data-sek-width-range-column-id="'+ _candidate_.id +'"]').val( newWidthValue ).trigger('input', { is_resize_column_trigger : true } );
                                           return newWidthValue;
                                     };
                                     ///
@@ -8168,7 +8282,7 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
                               });
                         }
                         $(this).addClass('sek-dragged');
-                        $('body').addClass('sek-dragging');
+                        self.cachedElements.$body.addClass('sek-dragging');
 
                         // Say it to the preview
                         // @see 'sek-drag-start' case in preview::schedulePanelMsgReactions()
@@ -8179,7 +8293,7 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
                   };
                   // $(this) is the dragged element
                   var _onEnd = function( evt ) {
-                        $('body').removeClass('sek-dragging');
+                        self.cachedElements.$body.removeClass('sek-dragging');
                         $(this).removeClass('sek-dragged');
                         api.previewer.send( 'sek-drag-stop' );
                   };
@@ -8959,7 +9073,7 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
                         //       api.sekTinyMceEditor.locker = input;
                         // }
 
-                        $(window)[ expanded ? 'on' : 'off' ]('resize', function() {
+                        self.cachedElements.$window[ expanded ? 'on' : 'off' ]('resize', function() {
                                 if ( ! api.sekEditorExpanded() )
                                   return;
                                 _.delay( function() {
@@ -8973,7 +9087,7 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
                               // fix wrong height on init https://github.com/presscustomizr/nimble-builder/issues/409
                               // there's probably a smarter way to get the right height on init. But let's be lazy.
                               _.delay( function() {
-                                    $(window).trigger('resize');
+                                    self.cachedElements.$window.trigger('resize');
                               }, 100 );
                         } else {
                               //resize reset
@@ -12033,7 +12147,7 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
                                 active_locations : api.czr_sektions.activeLocations()
                           }).done( function() {
                                 // disable the 'beforeunload' listeners generating popup window when the changeset is dirty
-                                $( window ).off( 'beforeunload' );
+                                $(window).off( 'beforeunload' );
                                 // Generate a download window
                                 // @see add_action( 'customize_register', '\Nimble\sek_catch_export_action', PHP_INT_MAX );
                                 window.location.href = [
@@ -12042,7 +12156,7 @@ var CZRSeksPrototype = CZRSeksPrototype || {};
                                       query.join('&')
                                 ].join('');
                                 // re-enable the listeners
-                                $( window ).on( 'beforeunload' );
+                                $(window).on( 'beforeunload' );
                           }).fail( function( error_resp ) {
                                 api.previewer.trigger('sek-notify', {
                                       notif_id : 'import-failed',

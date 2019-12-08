@@ -6,7 +6,7 @@ Tags: page builder, visual editor, customizer, drag and drop, header, footer, la
 Requires at least: 4.7
 Requires PHP: 5.4
 Tested up to: 5.3
-Stable tag: 1.9.11
+Stable tag: 1.9.12
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8FMNQPU36U27J&source=url
@@ -22,8 +22,8 @@ Watch the video below to see how this [demo page](https://demo.presscustomizr.co
 
 [vimeo https://vimeo.com/328473405]
 
-= Works in any page of your site and with all WordPress themes =
-Nimble Builder allows you to insert sections in any context of your site : home page, single post or page, category or tag page, even search results or [404 pages](https://docs.presscustomizr.com/article/372-design-your-404-page-with-the-nimble-builder/?utm_source=wp-org&utm_campaign=nimble-builder-page&utm_medium=link). No only that, but you can also decide to [start designing from a blank page](https://docs.presscustomizr.com/article/371-how-to-start-building-from-a-blank-page-with-the-wordpress-nimble-builder/?utm_source=wp-org&utm_campaign=nimble-builder-page&utm_medium=link) in any page of your site, and even create a custom header and footer. Nimble Builder uses native WordPress action hooks, which makes it compatible with all WordPress themes.
+= Works on any page of your site and with all WordPress themes =
+Nimble Builder allows you to insert sections in any context of your site : home page, single post or page, category or tag page, even search results or [404 pages](https://docs.presscustomizr.com/article/372-design-your-404-page-with-the-nimble-builder/?utm_source=wp-org&utm_campaign=nimble-builder-page&utm_medium=link). No only that, but you can also decide to [start designing from a blank page](https://docs.presscustomizr.com/article/371-how-to-start-building-from-a-blank-page-with-the-wordpress-nimble-builder/?utm_source=wp-org&utm_campaign=nimble-builder-page&utm_medium=link) on any page of your site, and even create a custom header and footer. Nimble Builder uses native WordPress action hooks, which makes it compatible with all WordPress themes.
 
 = Live demos =
 * Example of [integration with the Customizr theme](https://demo.presscustomizr.com/nimble-builder/?utm_source=wp-org&utm_campaign=nimble-builder-page&utm_medium=link)
@@ -35,7 +35,7 @@ Nimble Builder allows you to insert sections in any context of your site : home 
 * **Works in any WordPress contexts** : home, pages, posts, custom post types, archives, author pages, search page, ...
 * Create content, style, move / duplicate / remove elements **in real-time preview**.
 * **Includes many content modules** : classic text editor, image, column layouts, contact form, button, icons, map, html code, WordPress widget area, menu, and more.
-* **Insert engaging [post grids](https://docs.presscustomizr.com/article/393-how-to-add-post-grids-to-any-wordpress-page-with-nimble-builder/?utm_source=wp-org&utm_campaign=nimble-builder-page&utm_medium=link)** in any page, looking great on desktop and mobile devices.
+* **Insert engaging [post grids](https://docs.presscustomizr.com/article/393-how-to-add-post-grids-to-any-wordpress-page-with-nimble-builder/?utm_source=wp-org&utm_campaign=nimble-builder-page&utm_medium=link)** on any page, looking great on desktop and mobile devices.
 * Use **full width image or video backgrounds** for your sections, and [enable a parallax effect](https://docs.presscustomizr.com/article/380-how-to-set-a-parallax-background-for-a-section-in-wordpress-with-the-nimble-builder/?utm_source=wp-org&utm_campaign=nimble-builder-page&utm_medium=link).
 * **Easily [customize your content specifically for mobile devices](https://docs.presscustomizr.com/article/343-designing-for-mobile-devices-with-wordpress-nimble-builder/?utm_source=wp-org&utm_campaign=nimble-builder-page&utm_medium=link)** : change the responsive breakpoint, adapt font-size, spacing, alignment, column layouts, in real-time preview.
 * **Customize any text [with Google Fonts](https://docs.presscustomizr.com/article/364-how-to-use-google-fonts-with-the-nimble-builder/?utm_source=wp-org&utm_campaign=nimble-builder-page&utm_medium=link)**.
@@ -120,10 +120,19 @@ We have also published a detailed [troubleshooting guide for Nimble Builder](htt
 If you can't troubleshoot your issue, please open a new thread in [Nimble Builder support forum](https://wordpress.org/support/plugin/nimble-builder/).
 
 == Upgrade Notice ==
-= 1.9.11 =
-Added video background for section and column. Supports Vimeo, YouTube and self-hosted videos.
+= 1.9.12 =
+Various improvements to the recently introduced video background. User interface improvements when moving sections up/down the page. Better compatibility with the new default WordPress theme.
 
 == Changelog ==
+= 1.9.12 December 1st 2019 =
+* fixed : [Image module] make sure the default img CSS display is not overriden by other rules
+* fixed : "Insert new section" button not always rendered after new section insertion
+* fixed : [Menu module] increase specificity of nav-toggler button to avoid overrides ( happen with twentytwenty theme )
+* fixed : slowness when dragging a section
+* improved : moving sections up/down ( when clicking on the arrow icons ) is now location "agnostic" => a section can be moved from one location to another
+* fixed : [video background] better handling of ssl when using mp4 videos, to prevent mixed content warnings in the browser
+* added : [video background] new option to set a delay before the video is loaded
+
 = 1.9.11 November 22nd 2019 =
 * added : video background for section and column. Supports Vimeo, YouTube and self-hosted videos.
 * improved : [Carousel module] performances

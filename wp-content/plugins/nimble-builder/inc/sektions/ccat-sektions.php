@@ -7975,6 +7975,7 @@ function sek_get_module_params_for_czr_image_main_settings_child() {
                     'css_identifier' => 'h_alignment',
                     'title_width' => 'width-100',
                     'width-100'   => true,
+                    'css_selectors'=> 'figure'
                 ),
                 'use_custom_title_attr' => array(
                     'input_type'  => 'nimblecheck',
@@ -16937,12 +16938,19 @@ if ( ! class_exists( 'SEK_Front_Assets' ) ) :
                         <?php if ( sek_is_dev_mode() ) : ?>
                           <i class="sek-to-json fas fa-code"></i>
                         <?php endif; ?>
-                        <# if ( true !== data.is_first_section_in_parent ) { #>
-                          <i data-sek-click-on="move-section-up" class="material-icons sek-click-on" title="<?php _e( 'Move section up', 'nimble-builder' ); ?>">keyboard_arrow_up</i>
+                        <?php
+                          // Code before implementing https://github.com/presscustomizr/nimble-builder/issues/521 :
+                          /* <# if ( true !== data.is_first_section_in_parent ) { #>
+                          <i data-sek-click-on="move-section-up" class="material-icons sek-click-on" title="<?php _e( 'Move section up', 'text_domain' ); ?>">keyboard_arrow_up</i>
                         <# } #>
                         <# if ( true !== data.is_last_section_in_parent ) { #>
-                          <i data-sek-click-on="move-section-down" class="material-icons sek-click-on" title="<?php _e( 'Move section down', 'nimble-builder' ); ?>">keyboard_arrow_down</i>
-                        <# } #>
+                          <i data-sek-click-on="move-section-down" class="material-icons sek-click-on" title="<?php _e( 'Move section down', 'text_domain' ); ?>">keyboard_arrow_down</i>
+                        <# } #>*/
+                        ?>
+                        <i data-sek-click-on="move-section-up" class="material-icons sek-click-on" title="<?php _e( 'Move section up', 'nimble-builder' ); ?>">keyboard_arrow_up</i>
+                        <i data-sek-click-on="move-section-down" class="material-icons sek-click-on" title="<?php _e( 'Move section down', 'nimble-builder' ); ?>">keyboard_arrow_down</i>
+
+
                         <?php // if this is a nested section, it has the is_nested property set to true. We don't want to make it draggable for the moment. @todo ?>
                         <# if ( ! data.is_nested ) { #>
                           <# if ( true !== data.is_global_location ) { #>
@@ -16969,9 +16977,9 @@ if ( ! class_exists( 'SEK_Front_Assets' ) ) :
                         <#
                           var section_title = true !== data.is_global_location ? sekPreviewLocalized.i18n['section'] : sekPreviewLocalized.i18n['section (global)'];
                           var section_title = ! data.is_nested ? sekPreviewLocalized.i18n['section'] : sekPreviewLocalized.i18n['nested section'];
-                          if ( true === data.is_header_location ) {
+                          if ( true === data.is_header_location && ! data.is_nested ) {
                                 section_title = sekPreviewLocalized.i18n['header section'];
-                          } else if ( true === data.is_footer_location ) {
+                          } else if ( true === data.is_footer_location && ! data.is_nested ) {
                                 section_title = sekPreviewLocalized.i18n['footer section'];
                           }
 
@@ -17931,6 +17939,11 @@ if ( ! class_exists( 'SEK_Front_Render' ) ) :
                 if ( in_array( $level_type, array( 'section', 'column') ) && !empty( $bg_options[ 'bg-use-video'] ) && sek_booleanize_checkbox_val( $bg_options[ 'bg-use-video'] ) ) {
                     if ( !empty( $bg_options[ 'bg-video' ] ) ) {
                         $video_bg_url = $bg_options[ 'bg-video' ];
+                        // replace http by https if needed for mp4 video url
+                        // fixes https://github.com/presscustomizr/nimble-builder/issues/550
+                        if ( is_ssl() && is_string($video_bg_url) && stripos($video_bg_url, 'http://') === 0 ) {
+                            $video_bg_url = 'https' . substr($video_bg_url, 4);
+                        }
                     }
                     if ( array_key_exists( 'bg-video-loop', $bg_options ) ) {
                         $video_bg_loop = sek_booleanize_checkbox_val( $bg_options[ 'bg-video-loop' ] );
