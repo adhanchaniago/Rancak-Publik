@@ -1,0 +1,34 @@
+.primary-navbar__wrapper .branding .header-tagline {
+  font-size: 18px;
+}
+
+#footer-widget-area.widget__wrapper {
+  background-color: #d2d2d2;
+  padding: 20px;
+  margin: -2px;
+}
+
+#nav-below.col-12 {
+  background-color: #ffffff;
+  opacity: 0.95;
+  padding-top: 0;
+  padding-bottom: 0px;
+}
+
+.post-navigation .meta-nav-title {
+  color: #ffffff;
+  font-size: 0px;
+}
+
+.post-navigation a i.arrow {
+  color: #ffffff;
+  font-size: 0px;
+}
+
+#content.col-12.article-container {
+  padding-bottom: 0px;
+}
+
+#main-wrapper.section {
+  padding-bottom: 0px;
+}
