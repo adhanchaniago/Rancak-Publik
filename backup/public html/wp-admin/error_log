@@ -1,0 +1,7 @@
+[01-Jun-2020 13:36:53 UTC] Galat basis data WordPress Table 'wp_ahm_refunds' already exists untuk kueri CREATE TABLE `wp_ahm_refunds` (
+  `ID` int(11) NOT NULL,
+  `order_id` varchar(200) NOT NULL,
+  `amount` double NOT NULL,
+  `reason` text NOT NULL,
+  `date` int(11) NOT NULL
+) yang dibuat oleh do_action('wp_ajax_wpdm-activate-shop'), WP_Hook->do_action, WP_Hook->apply_filters, wpdm_activate_shop, activate_plugin, do_action('activate_wpdm-premium-packages/wpdm-premium-packages.php'), WP_Hook->do_action, WP_Hook->apply_filters, WPDMPP\Libs\Installer::init

@@ -1,0 +1,57 @@
+.primary-navbar__wrapper .branding .header-tagline {
+  font-size: 16px;
+}
+
+#footer-widget-area.widget__wrapper {
+  background-color: #d2d2d2;
+  padding: 20px;
+  margin: -2px;
+}
+
+#nav-below.col-12 {
+  background-color: #ffffff;
+  opacity: 0.95;
+  padding-top: 0;
+  padding-bottom: 0px;
+}
+
+.post-navigation .meta-nav-title {
+  color: #ffffff;
+  font-size: 0px;
+}
+
+.post-navigation a i.arrow {
+  color: #ffffff;
+  font-size: 0px;
+}
+
+#content.col-12.article-container {
+  padding-bottom: 0px;
+}
+
+#main-wrapper.section {
+  padding-bottom: 0px;
+}
+
+.nav__menu .menu-item .nav__link .nav__title {
+  font-size: 12px;
+}
+
+#main-menu.primary-nav__menu.regular-nav.nav__menu.nav {
+  font-size: 12px;
+}
+
+.footer-skin-dark .footer__wrapper h3 {
+  color: #000000;
+  margin-top: 11px;
+  padding: 0px;
+  padding-top: 0px;
+  text-indent: 0px;
+  letter-spacing: 0px;
+  word-spacing: 0px;
+  font-weight: normal;
+}
+
+small {
+  font-size: 0px;
+}
